@@ -71,4 +71,37 @@
     (.start (Thread. (fn [] (Thread/sleep 8000)
                        (pprint hospital))))))
 
-(simula-um-dia-em-paralelo-com-partial)
+;(simula-um-dia-em-paralelo-com-partial)
+
+(defn starta-thread-de-chegada
+  [hospital pessoa]
+  (.start (Thread. (fn [] (chega-sem-malvado! hospital pessoa)))))
+
+(defn simula-um-dia-em-paralelo-com-doseq
+  "Realmente estou preocupado em executar para os elementos da sequencia"
+  []
+  (let [hospital (atom (h.model/novo-hospital))
+        pessoas ["111", "222", "333", "444", "555", "666"]]
+
+    (doseq [pessoa pessoas]
+      (starta-thread-de-chegada hospital pessoa))
+
+    (.start (Thread. (fn [] (Thread/sleep 8000)
+                       (pprint hospital))))))
+
+;(simula-um-dia-em-paralelo-com-doseq)
+
+
+
+(defn simula-um-dia-em-paralelo-com-dotimes
+  "Realmente estou preocupado em executar N vezes"
+  []
+  (let [hospital (atom (h.model/novo-hospital))]
+
+    (dotimes [pessoa 6]
+      (starta-thread-de-chegada hospital pessoa))
+
+    (.start (Thread. (fn [] (Thread/sleep 8000)
+                       (pprint hospital))))))
+
+(simula-um-dia-em-paralelo-com-dotimes)
