@@ -53,3 +53,23 @@
     (-> hospital
         (atende de)
         (chega-em para pessoa))))
+
+
+(defn atende-completo
+  "Nome horrível, somente para demonstrar que é possível retornar os dois (quem e a fila restante)"
+  [hospital departamento]
+  {:paciente (update hospital departamento peek)
+   :hospital (update hospital departamento pop)})
+
+
+;pessoalmente, acho que não ficou melhor
+(defn atende-completo-que-chama-ambos
+  "Nome horrível, somente para demonstrar que é possível retornar os dois (quem e a fila restante)"
+  [hospital departamento]
+  (let [fila (get hospital departamento)
+        peek-pop (juxt peek pop)
+        [pessoa fila-atualizada] (peek-pop fila)
+        hospital-atualizado (update hospital assoc departamento fila-atualizada)]
+    {:paciente pessoa
+     :hospital     fila-atualizada}))
+
