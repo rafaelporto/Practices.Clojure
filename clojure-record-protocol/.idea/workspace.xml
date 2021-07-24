@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06c17e6e-9f8a-480d-bb2b-acc72255724c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/hospital/aula4.clj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hospital/aula2.clj" beforeDir="false" afterPath="$PROJECT_DIR$/src/hospital/aula2.clj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +29,7 @@
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
   </component>
-  <component name="ReplState" timestamp="1626267280108">{:repl-history {:ide [], :local [], :remote []}}</component>
+  <component name="ReplState" timestamp="1627903453186">{:repl-history {:ide [], :local [], :remote []}}</component>
   <component name="RunManager">
     <configuration name="REPL for hospital" type="ClojureREPL" factoryName="Local" activateToolWindowBeforeRun="false" temporary="true">
       <module name="hospital" />
