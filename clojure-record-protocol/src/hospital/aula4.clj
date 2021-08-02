@@ -68,6 +68,38 @@
 
 
 
+; pedido { :paciente paciente, :valor valor, :procedimento procedimento }
+
+; um pouco feio pois estou misturando keyword e classe com chave
+; mas calma la, isso eh uma funcao normal!!! tradicional! podemos testar!
+(defn tipo-de-autorizador [pedido]
+  (let [paciente (:paciente pedido)
+        situacao (:situacao paciente)
+        urgencia? (= :urgente situacao)]
+    (if urgencia?
+      :sempre-autorizado
+      (class paciente))))
+
+(defmulti deve-assinar-pre-autorizacao-do-pedido? tipo-de-autorizador)
+
+(defmethod deve-assinar-pre-autorizacao-do-pedido? :sempre-autorizado [pedido]
+  false)
+
+(defmethod deve-assinar-pre-autorizacao-do-pedido? PacienteParticular [pedido]
+  (>= (:valor pedido 0) 50))
+
+(defmethod deve-assinar-pre-autorizacao-do-pedido? PacientePlanoDeSaude [pedido]
+  (not (some #(= % (:procedimento pedido)) (:plano (:paciente pedido)))))
+
+(let [particular (->PacienteParticular 15, "Guilherme", "18/09/1981", :urgente)
+      plano (->PacientePlanoDeSaude 15, "Guilherme", "18/09/1981", :urgente,  [:raio-x, :ultrasom ])]
+  (pprint (deve-assinar-pre-autorizacao-do-pedido? { :paciente particular, :valor 1000, :procedimento :coleta-de-sangue }))
+  (pprint (deve-assinar-pre-autorizacao-do-pedido? { :paciente plano, :valor 1000, :procedimento :coleta-de-sangue })))
+
+(let [particular (->PacienteParticular 15, "Guilherme", "18/09/1981", :normal)
+      plano (->PacientePlanoDeSaude 15, "Guilherme", "18/09/1981", :normal,  [:raio-x, :ultrasom ])]
+  (pprint (deve-assinar-pre-autorizacao-do-pedido? { :paciente particular, :valor 1000, :procedimento :coleta-de-sangue }))
+  (pprint (deve-assinar-pre-autorizacao-do-pedido? { :paciente plano, :valor 1000, :procedimento :coleta-de-sangue })))
 
 
 
