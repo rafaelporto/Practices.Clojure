@@ -39,36 +39,61 @@
 
 (deftest chega-em-test
 
-  (testing "aceita pessoas enquanto cabem pessoas na fila"
+  (let
+    [hospital-cheio {:espera [1 35 42 64 21]}]
 
-    ; implentanção ruim, pois testa que escrevemos o que escrevemos,
-    ; isto é, testa o que erramos o que erramos e que acertamos o que acertamos
-    ;(is (= (update {:espera [1,2]} :espera 5)
-    ;       (chega-em {:espera [1,2]}, :espera, 5)))
+    (testing "aceita pessoas enquanto cabem pessoas na fila"
 
-    (is (= { :espera [1,2,3,4,5] }
-           (chega-em {:espera [1, 2, 3, 4]}, :espera, 5)))
-    ; teste não sequencial
-    (is (= { :espera [1,2,5] }
-           (chega-em {:espera [1, 2]}, :espera, 5))))
+      ; implentanção ruim, pois testa que escrevemos o que escrevemos,
+      ; isto é, testa o que erramos o que erramos e que acertamos o que acertamos
+      ;(is (= (update {:espera [1,2]} :espera 5)
+      ;       (chega-em {:espera [1,2]}, :espera, 5)))
 
-  (testing "não aceita quando não cabe a fila"
-    ; verificando que uma exception foi jogada
-    ; código clássico horrível. Usamos uma exception GENERICA.
-    ; mas qualquer outro erro genérico vai jogar essa exception, e nós vamos achar que deu certo
-    ; quando deu errado
-    ;(is (thrown? clojure.lang.ExceptionInfo
-    ;             (chega-em {:espera [1 35 42 64 21]}, :espera 76)))
+      ;(is (= {:espera [1, 2, 3, 4, 5]}
+      ;       (chega-em {:espera [1, 2, 3, 4]}, :espera, 5)))
+      ;; teste não sequencial
+      ;(is (= {:espera [1, 2, 5]}
+      ;       (chega-em {:espera [1, 2]}, :espera, 5)))
 
-    ; mesmo que eu escolha uma exception do genero, perigoso!
-    ;(is (thrown? IllegalStateException
-    ;             (chega-em {:espera [1 35 42 64 21]}, :espera 76)))
+      (is (= {:hospital {:espera [1, 2, 3, 4, 5]}, :resultado :sucesso}
+             (chega-em {:espera [1, 2, 3, 4]}, :espera, 5)))
+      ; teste não sequencial
+      (is (= {:hospital {:espera [1, 2, 5]}, :resultado :sucesso}
+             (chega-em {:espera [1, 2]}, :espera, 5))))
 
-    ; outra abordagem, do nil
-    ; mas o perigo do swap, teriamos que trabalhar em outro ponto a condicao de erro
-    ;(is (nil? (chega-em {:espera [1 35 42 64 21]}, :espera 76)))
+    (testing "não aceita quando não cabe a fila"
+      ; verificando que uma exception foi jogada
+      ; código clássico horrível. Usamos uma exception GENERICA.
+      ; mas qualquer outro erro genérico vai jogar essa exception, e nós vamos achar que deu certo
+      ; quando deu errado
+      ;(is (thrown? clojure.lang.ExceptionInfo
+      ;             (chega-em hospital-cheio, :espera 76)))
 
-    )
+      ; mesmo que eu escolha uma exception do genero, perigoso!
+      ;(is (thrown? IllegalStateException
+      ;             (chega-em hospital-cheio, :espera 76)))
+
+      ; outra abordagem, do nil
+      ; mas o perigo do swap, teriamos que trabalhar em outro ponto a condicao de erro
+      ;(is (nil? (chega-em hospital-cheio, :espera 76)))
+
+      ; outra maneira de testar
+      ; onde ao invés de como Java, utilizar o TIPO da exception para entender
+      ; o TIPO (outro tipo) de erro que ocorreu, estou usando os dados da
+      ; exception para isso
+      ; menos sensível que a mensagem de erro (messmo que usasse regex)
+      ; mais ainda eh uma validação trabalhosa.
+      ;(is (try
+      ;      (chega-em hospital-cheio, :espera, 76)
+      ;      false
+      ;      (catch clojure.lang.ExceptionInfo e
+      ;        (= :impossivel-colocar-pessoa-na-fila (:tipo (ex-data e)))
+      ;        )))
+
+      (is (= {:hospital hospital-cheio, :resultado :impossivel-colocar-pessoa-na-fila}
+             (chega-em hospital-cheio, :espera 76)))
+
+      ))
   )
 
 
